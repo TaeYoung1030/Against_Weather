@@ -21,6 +21,8 @@ public class MainData
 public class WeatherInfo
 {
     public string main;
+    public string description;
+    public string icon;
 }
 
 [Serializable]

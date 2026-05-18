@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -6,21 +7,22 @@ public class WeatherManager : MonoBehaviour
 {
     private string apiKey = "0f2a2a069248bebbe4805b8dca9901c8";
 
-    public string[] countries = { "Seoul", "Tokyo", "Bangkok" };
+    public WeatherData CurrentWeather {  get; private set; }
+
     private int currentCountryIndex = 0;
 
     private void Start()
     {
-        FetchWeatherForCurrentCountry();
+        
     }
 
-    public void FetchWeatherForCurrentCountry()
+    public void FetchWeather(string cityName, Action<bool> onCompleted )
     {
-        string cityName = countries[currentCountryIndex];
-        StartCoroutine(GetWeatherCoroutine(cityName));
+        
+        StartCoroutine(GetWeatherCoroutine(cityName, onCompleted));
     }
 
-    IEnumerator GetWeatherCoroutine(string city)
+    IEnumerator GetWeatherCoroutine(string city, Action<bool> onCompleted)
     {
         string url = $"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={apiKey}&units=metric";
 
@@ -28,23 +30,27 @@ public class WeatherManager : MonoBehaviour
         {
             yield return request.SendWebRequest();
 
-            if(request.result == UnityWebRequest.Result.Success)
+            // 2. 예외 처리: 통신 실패 시
+            if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
             {
-                string json = request.downloadHandler.text;
-                WeatherData data = JsonUtility.FromJson<WeatherData>(json);
-
-                Debug.Log($"{data.name}의 온도: {data.main.temp}°C, 상태 : {data.weather[0].main}");
-
+                Debug.LogError($"[{city}] 날씨 데이터를 가져오지 못했습니다: {request.error}");
+                // 실패했다고 알려줌
+                onCompleted?.Invoke(false);
             }
+            // 3. 통신 성공 시
             else
             {
-                Debug.LogError("날씨 데이터 로드 실패 : " + request.error);
+                string json = request.downloadHandler.text;
+
+                // 받아온 텍스트를 WeatherData 클래스로 변환해서 캐싱(저장)
+                CurrentWeather = JsonUtility.FromJson<WeatherData>(json);
+
+                Debug.Log($"[{city}] 날씨 로드 완료! (상태: {CurrentWeather.weather[0].main}, 온도: {CurrentWeather.main.temp}도)");
+
+                // 성공했다고 알려줌 -> 이 신호를 받으면 GameManager가 몬스터를 소환함!
+                onCompleted?.Invoke(true);
             }
         }
     }
 
-    public void GoToNextCounty()
-    {
-
-    }
 }

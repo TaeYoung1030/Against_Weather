@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbf96c9b96f4fb54e99f583e6f1ab78f, type: 3}
+  m_Name: Clouds_Day
+  m_EditorClassIdentifier: Assembly-CSharp::WeatherMonsterData
+  weatherType: Clouds
+  monsterName: Clouds_Day
+  monsterPrefab: {fileID: 6331237612958537259, guid: 6ad14e18e5389b14ba0d57540151837c, type: 3}
+  maxHP: 100
+  coinReward: 0
+  spawnTime: 0
