@@ -9,7 +9,7 @@ public class WeatherMonsterData : ScriptableObject
     public GameObject monsterPrefab;
     [Header("몬스터 특성")]
     public float maxHP;
-    public float coinReward;
+    public int coinReward;
 
     public enum SpawnTimeType
     {

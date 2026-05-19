@@ -145,7 +145,7 @@ public class GameManager : MonoBehaviour
         float hpMuliplier = Mathf.Pow(1.5f, currentStage - 1); //1.5배의 제곱
         float finalHp = matchedData.maxHP * hpMuliplier;
 
-        //newMonster.GetComponent<MonsterController>.InitHP(finalHp);
+        newMonster.GetComponent<MonsterController>().InitMonster(matchedData, finalHp);
     }
 
     void SpawnEpicMonster()
@@ -164,7 +164,7 @@ public class GameManager : MonoBehaviour
         float hpMultiplier = Mathf.Pow(1.7f, currentStage - 1);
         float finalHp = selectedMon.maxHP * hpMultiplier;
 
-        // newMonster.GetComponent<MonsterController>().InitHP(finalHp);
+        newMonster.GetComponent<MonsterController>().InitMonster(selectedMon, finalHp);
 
     }
 
@@ -184,7 +184,7 @@ public class GameManager : MonoBehaviour
         float hpMultiplier = Mathf.Pow(2f, currentStage - 1);
         float finalHp = selectedMon.maxHP * hpMultiplier;
 
-        // newMonster.GetComponent<MonsterController>().InitHP(finalHp);
+        newMonster.GetComponent<MonsterController>().InitMonster(selectedMon, finalHp);
     }
 
     //몬스터 죽으면 호출 할 함수
