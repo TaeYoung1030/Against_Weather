@@ -7,7 +7,7 @@ public class MonsterController : MonoBehaviour
     [SerializeField] WeatherMonsterData.MonsterTier myTier;
 
     [Header("타격감 세팅")]
-    [SerializeField] float knockbackDistance = 1.5f;
+    [SerializeField] float knockbackDistance = 0.7f;
     [SerializeField] float hitAnimDuration = 0.15f;
     [SerializeField] float swaySpeed = 5f;
     [SerializeField] float swayAngle = 5f;
@@ -38,16 +38,16 @@ public class MonsterController : MonoBehaviour
         StartCoroutine(SpawnAnimation());
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         float angle = Mathf.Sin(Time.time * swaySpeed) * swayAngle;
-        transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        transform.rotation = Quaternion.Euler(0f, angle, 0f);
     }
 
     public void TakeDamage(float damage)
     {
         if(isDead) return;
-
+        //빗나감 로직 추가 - 일정 확률로 데미지가 깎이지 않게
         currentHP -= damage;
         Debug.Log($"남은 체력 : {currentHP}");
         OnHitEffect();
@@ -78,7 +78,7 @@ public class MonsterController : MonoBehaviour
         Destroy(gameObject);
     }
 
-    IEnumerator SpawnAnimation()
+    protected virtual IEnumerator SpawnAnimation()
     {
         // 하늘 위(Y축 +8)에서 시작
         Vector3 startPos = originPos + Vector3.up * 8f;
@@ -109,8 +109,8 @@ public class MonsterController : MonoBehaviour
 
     void TriggerHitEffect()
     {
-        //핵심: 만약 이미 맞는 모션이 재생 중이라면 즉시 취소!
-        // 이 코드가 있어야 광클 시 뒤로 계속 밀려나지 않고 버퍼링 걸린 것처럼 리셋됩니다.
+        //만약 이미 맞는 모션이 재생 중이라면 즉시 취소
+        // 이 코드가 있어야 광클 시 뒤로 계속 밀려나지 않고 버퍼링 걸린 것처럼 리셋
         if (hitCoroutine != null)
         {
             StopCoroutine(hitCoroutine);
@@ -120,12 +120,12 @@ public class MonsterController : MonoBehaviour
         hitCoroutine = StartCoroutine(HitAnimation());
     }
 
-    IEnumerator HitAnimation()
+    protected virtual IEnumerator HitAnimation()
     {
-        // (요청 2-1) 찌그러짐 이펙트: 위아래로 납작해지고 옆으로 퍼짐
+        //찌그러짐 이펙트: 위아래로 납작해지고 옆으로 퍼짐
         Vector3 squashedScale = new Vector3(originScale.x * 1.3f, originScale.y * 0.7f, originScale.z * 1.3f);
 
-        // (요청 2-2) 넉백 이펙트: 카메라 반대 방향(Z축)으로 훅 밀려남
+        //넉백 이펙트: 카메라 반대 방향(Z축)으로 훅 밀려남
         Vector3 knockedPos = originPos + Vector3.forward * knockbackDistance;
 
         // 맞자마자 즉시 찌그러지고 뒤로 밀려난 상태로 만듭니다. (찰진 타격감을 위해)

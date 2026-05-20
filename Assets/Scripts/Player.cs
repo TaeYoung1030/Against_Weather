@@ -32,4 +32,6 @@ public class Player : MonoBehaviour
             }
         }
     }
+
+    //시간초과로 플레이어가 죽었을떄 -> GM의 StartNewStage로 이동하는 로직
 }

@@ -15,7 +15,7 @@ MonoBehaviour:
   weatherType: Epic_Snow
   monsterName: epic_snow
   monsterPrefab: {fileID: 1740249765181820786, guid: 5f6e6f50846ffc041a83b6232e00d98a, type: 3}
-  maxHP: 0
+  maxHP: 150
   coinReward: 0
   spawnTime: 2
   monsterTier: 1

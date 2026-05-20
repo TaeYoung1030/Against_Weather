@@ -137,7 +137,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Clear
   myTier: 0
-  knockbackDistance: 1.5
+  knockbackDistance: 0.7
   hitAnimDuration: 0.15
   swaySpeed: 5
   swayAngle: 5

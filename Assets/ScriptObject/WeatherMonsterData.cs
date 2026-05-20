@@ -10,6 +10,7 @@ public class WeatherMonsterData : ScriptableObject
     [Header("몬스터 특성")]
     public float maxHP;
     public int coinReward;
+    public float catchTime;
 
     public enum SpawnTimeType
     {

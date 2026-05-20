@@ -28,7 +28,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] int targetKillsForLegend = 6;
 
     private int stageNormalKills = 0;
-    
+
+    private GameUI ui;
 
     private void Awake()
     {
@@ -75,6 +76,8 @@ public class GameManager : MonoBehaviour
     void EnterCity(string city)
     {
         weatherManager.FetchWeather(city, OnWeatherLoaded);
+        //ui에 정보 반영시키기(1)
+        //ui.updateInfo(city, 날씨)
     }
 
     void OnWeatherLoaded(bool isSuccess)
@@ -83,6 +86,7 @@ public class GameManager : MonoBehaviour
         {
             // 통신 성공! 몬스터 소환 시작
             SpawnMatchedNormalMonster();
+            //성공했으니 ui로 반영 시키기(2)
         }
         else
         {
