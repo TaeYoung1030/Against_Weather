@@ -26,10 +26,10 @@ public class GameManager : MonoBehaviour
     [Header("몬스터 등장 스테이지")]
     [SerializeField] int targetKillsForEpic = 3;
     [SerializeField] int targetKillsForLegend = 6;
+    [Header("UI매니저")]
+    [SerializeField] GameUI gameUI;
 
     private int stageNormalKills = 0;
-
-    private GameUI ui;
 
     private void Awake()
     {
@@ -69,6 +69,11 @@ public class GameManager : MonoBehaviour
         currentCityIndex = 0;
         stageNormalKills = 0;
 
+        if (gameUI != null)
+        {
+            gameUI.UpdateStage(currentStage);
+        }
+
         EnterCity(currentStageCities[currentCityIndex]);
 
     }
@@ -76,8 +81,6 @@ public class GameManager : MonoBehaviour
     void EnterCity(string city)
     {
         weatherManager.FetchWeather(city, OnWeatherLoaded);
-        //ui에 정보 반영시키기(1)
-        //ui.updateInfo(city, 날씨)
     }
 
     void OnWeatherLoaded(bool isSuccess)
@@ -86,7 +89,11 @@ public class GameManager : MonoBehaviour
         {
             // 통신 성공! 몬스터 소환 시작
             SpawnMatchedNormalMonster();
-            //성공했으니 ui로 반영 시키기(2)
+            
+            string currentCity = currentStageCities[currentCityIndex];
+            float currentTemp = weatherManager.CurrentWeather.main.temp;
+
+            gameUI.updateInfo(currentCity,currentTemp);
         }
         else
         {
@@ -150,6 +157,10 @@ public class GameManager : MonoBehaviour
         float finalHp = matchedData.maxHP * hpMuliplier;
 
         newMonster.GetComponent<MonsterController>().InitMonster(matchedData, finalHp);
+        if (gameUI != null)
+        {
+            gameUI.ResetHpBar();
+        }
     }
 
     void SpawnEpicMonster()
@@ -169,6 +180,10 @@ public class GameManager : MonoBehaviour
         float finalHp = selectedMon.maxHP * hpMultiplier;
 
         newMonster.GetComponent<MonsterController>().InitMonster(selectedMon, finalHp);
+        if (gameUI != null)
+        {
+            gameUI.ResetHpBar();
+        }
 
     }
 
@@ -189,6 +204,10 @@ public class GameManager : MonoBehaviour
         float finalHp = selectedMon.maxHP * hpMultiplier;
 
         newMonster.GetComponent<MonsterController>().InitMonster(selectedMon, finalHp);
+        if (gameUI != null)
+        {
+            gameUI.ResetHpBar();
+        }
     }
 
     //몬스터 죽으면 호출 할 함수
@@ -244,6 +263,21 @@ public class GameManager : MonoBehaviour
         SaveGameData();
 
         StartNewStage();
+    }
+
+    public void FailMission()
+    {
+        //여기서 실패 ui 제출
+        gameUI.UpdateFailMessage();
+        StartNewStage();
+    }
+
+    public void OnMonsterTakeDamage(float currentHp, float maxHp)
+    {
+        if (gameUI != null)
+        {
+            gameUI.UpdateHpBar(currentHp, maxHp);
+        }
     }
 
     public void SaveGameData()

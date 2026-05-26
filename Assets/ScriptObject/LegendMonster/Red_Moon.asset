@@ -17,5 +17,6 @@ MonoBehaviour:
   monsterPrefab: {fileID: 2805585627764681986, guid: 6b50810954aea0942b5a200b14cf7080, type: 3}
   maxHP: 200
   coinReward: 0
+  catchTime: 30
   spawnTime: 2
   monsterTier: 2

@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MonsterController : MonoBehaviour
 {
@@ -12,17 +13,30 @@ public class MonsterController : MonoBehaviour
     [SerializeField] float swaySpeed = 5f;
     [SerializeField] float swayAngle = 5f;
 
+    protected float timeLimit;
+    protected float currentTimer;
+    protected bool isTimerRunning = false;
+
+    protected bool isEpicSkillActivated = false;
+    protected bool isLegendSkillActivated = false;
+
+
+    protected float targetHpRatio = 1f;
+
     protected float maxHP;
     protected float currentHP;
     protected int dropCoin;
     protected bool isDead = false;
 
-    Vector3 originPos;
-    Vector3 originScale;
+    protected Vector3 originPos;
+    protected Vector3 originScale;
 
     protected WeatherMonsterData myData;
 
     private Coroutine hitCoroutine;
+
+    protected GameManager gameManager;
+    protected GameUI gameUI;
 
     public virtual void InitMonster(WeatherMonsterData data, float Hp)
     {
@@ -31,28 +45,76 @@ public class MonsterController : MonoBehaviour
         currentHP = maxHP;
 
         dropCoin = myData.coinReward;
+        timeLimit = myData.catchTime;
 
         originPos = transform.position;
         originScale = transform.localScale;
 
+        isDead = false;
+        isEpicSkillActivated = false;
+        isLegendSkillActivated = false;
+
         StartCoroutine(SpawnAnimation());
+
+        if (myTier == WeatherMonsterData.MonsterTier.Epic || myTier == WeatherMonsterData.MonsterTier.Legend)
+        {
+            StartTimer();
+            gameUI.ToggleCityWeatherUI(false);
+        }
+        else
+        {
+            gameUI.UpdateCatchTime(0f,false);
+            gameUI.ToggleCityWeatherUI(true);
+        }
+    }
+
+    private void Awake()
+    {
+        gameManager = FindFirstObjectByType<GameManager>();
+        gameUI = FindFirstObjectByType<GameUI>();
     }
 
     protected virtual void Update()
     {
         float angle = Mathf.Sin(Time.time * swaySpeed) * swayAngle;
         transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+        if (isTimerRunning)
+        {
+            currentTimer -= Time.deltaTime;
+            gameUI.UpdateCatchTime(currentTimer, isTimerRunning);
+            if (currentTimer <= 0)
+            {
+                TimeOutFail();
+            }
+        }
     }
 
     public void TakeDamage(float damage)
     {
         if(isDead) return;
+        float finalDamage = ApplyPlayerDebuffToDamage(damage);
+        if (finalDamage <= 0) return;
         //빗나감 로직 추가 - 일정 확률로 데미지가 깎이지 않게
-        currentHP -= damage;
+        currentHP -= finalDamage;
+
+        GameManager.instance.OnMonsterTakeDamage(currentHP, maxHP);
         Debug.Log($"남은 체력 : {currentHP}");
         OnHitEffect();
 
-        if(currentHP <= 0)
+        if (currentHP / maxHP <= 0.2f && !isEpicSkillActivated)
+        {
+            isEpicSkillActivated = true;
+            ActivateEpicSkill();
+        }
+
+        if (currentHP / maxHP <= 0.5f && !isLegendSkillActivated)
+        {
+            isEpicSkillActivated = true;
+            ActivateLegendSkill();
+        }
+
+        if (currentHP <= 0)
         {
             isDead = true;
             Die();
@@ -61,18 +123,26 @@ public class MonsterController : MonoBehaviour
         TriggerHitEffect();
     }
 
-    protected virtual void OnHitEffect()
+    private void StartTimer()
     {
-
+        currentTimer = timeLimit;
+        isTimerRunning = true;
     }
 
-    protected virtual void OnDeathEffect()
+    protected void TimeOutFail()
     {
+        isTimerRunning = false;
+        isDead = true;
 
+        Debug.Log("시간 제한 초과! 보스 공략 실패!");
+        gameManager.FailMission();
+
+        Destroy(gameObject);
     }
 
     protected void Die()
     {
+        isTimerRunning = false;
         OnDeathEffect();
         GameManager.instance.OnMonsterDie(myTier);
         Destroy(gameObject);
@@ -148,4 +218,11 @@ public class MonsterController : MonoBehaviour
         transform.localScale = originScale;
         transform.position = originPos;
     }
+
+    protected virtual void ActivateEpicSkill() { }
+    protected virtual float ApplyPlayerDebuffToDamage(float incomingDamage) { return incomingDamage; }
+    protected virtual void ActivateLegendSkill() { }
+    protected virtual void OnHitEffect() { }
+    protected virtual void OnDeathEffect() { }
+  
 }

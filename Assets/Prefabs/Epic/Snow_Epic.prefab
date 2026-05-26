@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8345818792599124891}
   - component: {fileID: 1597876691937974797}
-  - component: {fileID: 6768900393079472543}
+  - component: {fileID: 9010948940462255913}
   m_Layer: 0
   m_Name: Snow_Epic
   m_TagString: Untagged
@@ -55,7 +55,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.7
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6768900393079472543
+--- !u!114 &9010948940462255913
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -64,14 +64,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 1740249765181820786}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cf74cdf812094b149af66042879ceab1, type: 3}
+  m_Script: {fileID: 11500000, guid: 53c123829895bae478a1c46863d7553b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Epic_Snow
+  m_EditorClassIdentifier: Assembly-CSharp::EpicMonster
   myTier: 1
   knockbackDistance: 0.7
   hitAnimDuration: 0.15
   swaySpeed: 5
   swayAngle: 5
+  epicBossType: 1
+  recoverHP: 0.02
+  damageReduce: 0.5
+  missChance: 0.3
 --- !u!1 &6986086759776974487
 GameObject:
   m_ObjectHideFlags: 0
