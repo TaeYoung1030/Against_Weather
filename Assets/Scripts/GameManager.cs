@@ -269,6 +269,8 @@ public class GameManager : MonoBehaviour
     {
         //여기서 실패 ui 제출
         gameUI.UpdateFailMessage();
+        currentStage = 1;
+        SaveGameData();
         StartNewStage();
     }
 

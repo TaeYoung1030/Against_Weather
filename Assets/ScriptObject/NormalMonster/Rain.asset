@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Rain
   m_EditorClassIdentifier: Assembly-CSharp::WeatherMonsterData
   weatherType: Rain
-  monsterName: Rain_cloud
+  monsterName: "\uBE44"
   monsterPrefab: {fileID: 7161241313519148138, guid: 0435f784f2e253d46882589734f4b36d, type: 3}
   maxHP: 100
   coinReward: 0

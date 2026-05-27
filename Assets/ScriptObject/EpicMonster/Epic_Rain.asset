@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dbf96c9b96f4fb54e99f583e6f1ab78f, type: 3}
-  m_Name: Clouds_Day
+  m_Name: Epic_Rain
   m_EditorClassIdentifier: Assembly-CSharp::WeatherMonsterData
-  weatherType: Clouds
-  monsterName: "\uD750\uB9BC"
-  monsterPrefab: {fileID: 6331237612958537259, guid: 6ad14e18e5389b14ba0d57540151837c, type: 3}
-  maxHP: 100
+  weatherType: 
+  monsterName: 
+  monsterPrefab: {fileID: 0}
+  maxHP: 0
   coinReward: 0
   catchTime: 0
-  spawnTime: 0
-  monsterTier: 0
+  spawnTime: 2
+  monsterTier: 1

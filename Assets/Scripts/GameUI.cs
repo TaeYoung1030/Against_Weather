@@ -28,6 +28,7 @@ public class GameUI : MonoBehaviour
     [Header("몬스터 처치 제한 시간")]
     [SerializeField] TextMeshProUGUI catchTimeTxt;
 
+ 
     private float targetHpRatio = 1f;
     private Coroutine failMessageCoroutine; //광클 방지용 
 

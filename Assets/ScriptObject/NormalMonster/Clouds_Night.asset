@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Clouds_Night
   m_EditorClassIdentifier: Assembly-CSharp::WeatherMonsterData
   weatherType: Clouds
-  monsterName: Clouds_Night
+  monsterName: "\uD750\uB9BC"
   monsterPrefab: {fileID: 4524008664975938944, guid: 4026a2542c93059419270a9848669255, type: 3}
   maxHP: 100
   coinReward: 0
+  catchTime: 0
   spawnTime: 1
   monsterTier: 0

@@ -57,6 +57,7 @@ public class EpicMonster : MonsterController
         {
             case EpicType.Cold:
                 // [한파] 데미지를 반토막 냅니다.
+                Debug.Log("한파 스킬로 공격력 감소");
                 return incomingDamage * (1f - damageReduce);
 
             case EpicType.Rain:

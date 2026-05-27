@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: Clear_Night
   m_EditorClassIdentifier: Assembly-CSharp::WeatherMonsterData
   weatherType: Clear
-  monsterName: Clear_Night
+  monsterName: "\uB9D1\uC74C"
   monsterPrefab: {fileID: 8738340532803391328, guid: 737714031d138424a8f5ae2e84af1310, type: 3}
   maxHP: 100
   coinReward: 0
+  catchTime: 0
   spawnTime: 1
+  monsterTier: 0
