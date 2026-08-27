@@ -12,6 +12,12 @@ public class MonsterController : MonoBehaviour
     [SerializeField] float hitAnimDuration = 0.15f;
     [SerializeField] float swaySpeed = 5f;
     [SerializeField] float swayAngle = 5f;
+    [SerializeField] protected ParticleSystem hitParticle;
+
+    [Header("외형 설정")]
+    [SerializeField] private GameObject modelingChild;
+    [SerializeField] private GameObject child1;
+    [SerializeField] private GameObject child2;
 
     protected float timeLimit;
     protected float currentTimer;
@@ -54,6 +60,11 @@ public class MonsterController : MonoBehaviour
         isEpicSkillActivated = false;
         isLegendSkillActivated = false;
 
+        gameUI.ShowMonsterName(myData.monsterName);
+        gameUI.ResetAllDebuffUI();
+
+        gameUI.ChangeBackground(myData.bgImage);
+
         StartCoroutine(SpawnAnimation());
 
         if (myTier == WeatherMonsterData.MonsterTier.Epic || myTier == WeatherMonsterData.MonsterTier.Legend)
@@ -95,22 +106,23 @@ public class MonsterController : MonoBehaviour
         if(isDead) return;
         float finalDamage = ApplyPlayerDebuffToDamage(damage);
         if (finalDamage <= 0) return;
-        //빗나감 로직 추가 - 일정 확률로 데미지가 깎이지 않게
         currentHP -= finalDamage;
 
         GameManager.instance.OnMonsterTakeDamage(currentHP, maxHP);
         Debug.Log($"남은 체력 : {currentHP}");
         OnHitEffect();
 
-        if (currentHP / maxHP <= 0.2f && !isEpicSkillActivated)
+        if (myTier == WeatherMonsterData.MonsterTier.Epic && currentHP / maxHP <= 0.4f && !isEpicSkillActivated)
         {
             isEpicSkillActivated = true;
+            gameUI.DebuffskillUI();
             ActivateEpicSkill();
         }
 
-        if (currentHP / maxHP <= 0.5f && !isLegendSkillActivated)
+        if (myTier == WeatherMonsterData.MonsterTier.Legend && currentHP / maxHP <= 0.5f && !isLegendSkillActivated)
         {
-            isEpicSkillActivated = true;
+            isLegendSkillActivated = true;
+            gameUI.LegendskillUI();
             ActivateLegendSkill();
         }
 
@@ -144,65 +156,54 @@ public class MonsterController : MonoBehaviour
     {
         isTimerRunning = false;
         OnDeathEffect();
-        GameManager.instance.OnMonsterDie(myTier);
+        GameManager.instance.OnMonsterDie(myTier,myData.coinReward);
         Destroy(gameObject);
     }
 
     protected virtual IEnumerator SpawnAnimation()
     {
-        // 하늘 위(Y축 +8)에서 시작
         Vector3 startPos = originPos + Vector3.up * 8f;
-        // 반동을 위해 원래 위치보다 살짝 아래(Y축 -0.5)를 목표로 지정
+        // 반동 주기 위한 용도
         Vector3 bounceDipPos = originPos + Vector3.down * 0.5f;
 
-        // 1단계: 하늘에서 아래로 빠르게 떨어짐
         float t = 0f;
         while (t < 1f)
         {
-            t += Time.deltaTime * 4f; // 떨어지는 속도
+            t += Time.deltaTime * 4f;
             transform.position = Vector3.Lerp(startPos, bounceDipPos, t);
             yield return null;
         }
-
-        // 2단계: 살짝 파고들었던 곳에서 원래 위치로 튕겨 올라옴 (반동)
+        //반동
         t = 0f;
         while (t < 1f)
         {
-            t += Time.deltaTime * 6f; // 복귀 속도
+            t += Time.deltaTime * 6f;
             transform.position = Vector3.Lerp(bounceDipPos, originPos, t);
             yield return null;
         }
 
-        // 오차 보정 (정확히 원래 자리로)
         transform.position = originPos;
     }
 
     void TriggerHitEffect()
     {
-        //만약 이미 맞는 모션이 재생 중이라면 즉시 취소
-        // 이 코드가 있어야 광클 시 뒤로 계속 밀려나지 않고 버퍼링 걸린 것처럼 리셋
         if (hitCoroutine != null)
         {
             StopCoroutine(hitCoroutine);
         }
 
-        // 새로운 피격 모션 시작
         hitCoroutine = StartCoroutine(HitAnimation());
     }
 
     protected virtual IEnumerator HitAnimation()
     {
-        //찌그러짐 이펙트: 위아래로 납작해지고 옆으로 퍼짐
         Vector3 squashedScale = new Vector3(originScale.x * 1.3f, originScale.y * 0.7f, originScale.z * 1.3f);
 
-        //넉백 이펙트: 카메라 반대 방향(Z축)으로 훅 밀려남
         Vector3 knockedPos = originPos + Vector3.forward * knockbackDistance;
 
-        // 맞자마자 즉시 찌그러지고 뒤로 밀려난 상태로 만듭니다. (찰진 타격감을 위해)
         transform.localScale = squashedScale;
         transform.position = knockedPos;
 
-        // 이제 원래 상태(originPos, originScale)로 부드럽게 돌아옵니다.
         float elapsed = 0f;
         while (elapsed < hitAnimDuration)
         {
@@ -214,15 +215,40 @@ public class MonsterController : MonoBehaviour
             yield return null;
         }
 
-        // 오차 보정 (완벽하게 원래 상태로 복구)
         transform.localScale = originScale;
         transform.position = originPos;
     }
+    protected virtual void OnHitEffect() 
+    {
+        if(hitParticle != null)
+        {
+            hitParticle.Stop();
+            hitParticle.Play();
+        }
+    }
+
+    public void SetVisualActive(bool isActive)
+    {
+        if (modelingChild != null)
+        {
+            modelingChild.SetActive(isActive);
+        }
+
+        if(child1 != null)
+        {
+            child1.SetActive(isActive);
+        }
+
+        if(child2 != null)
+        {
+            child2.SetActive(isActive);
+        }
+    }
+
 
     protected virtual void ActivateEpicSkill() { }
     protected virtual float ApplyPlayerDebuffToDamage(float incomingDamage) { return incomingDamage; }
     protected virtual void ActivateLegendSkill() { }
-    protected virtual void OnHitEffect() { }
     protected virtual void OnDeathEffect() { }
   
 }

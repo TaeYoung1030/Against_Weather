@@ -1,14 +1,44 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Player : MonoBehaviour
 {
+    public static Player instance;
+
     [Header("플레이어 스탯")]
-    [SerializeField] float basicDamage = 10;
+    [SerializeField] public float basicDamage = 10;
+    [Header("사운드")]
+    [SerializeField] AudioClip clip;
+
+    AudioSource asc;
+    private float defaultDamage = 10f;
+
+    private void Awake()
+    {
+        asc = GetComponent<AudioSource>();
+
+        if(instance == null) instance = this;
+        else Destroy(instance);
+
+        LoadPlayerStat();
+    }
+
+    public void UpgradeDamage(float amount)
+    {
+        basicDamage += amount;
+        SavePlayerStat();
+        Debug.Log($"[플레이어] 공격력이 상승했습니다! 현재 공격력: {basicDamage}");
+    }
 
     private void Update()
     {
         if(Input.GetMouseButtonDown(0))
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+            asc.PlayOneShot(clip);
             AttackMonster();
         }
     }
@@ -22,16 +52,28 @@ public class Player : MonoBehaviour
         {
             MonsterController targetMonster = hit.collider.GetComponent<MonsterController>();
 
-            // 4. 스크립트가 존재한다면 (즉, 맞은 게 몬스터가 확실하다면)
             if (targetMonster != null)
             {
-                // 몬스터의 TakeDamage 함수를 불러와서 내 데미지를 넘겨줍니다!
-                targetMonster.TakeDamage(basicDamage);
+                targetMonster.TakeDamage(basicDamage*GameManager.instance.GetBuff());
+                return;
+            }
 
-                // (선택) 부딪힌 위치(hit.point)에 타격 파티클 이펙트를 생성할 수도 있습니다.
+            MinionController minion = hit.collider.GetComponent<MinionController>();
+            if (minion != null)
+            {
+                minion.TakeDamage(basicDamage); 
+                return;
             }
         }
     }
+    private void SavePlayerStat()
+    {
+        PlayerPrefs.SetFloat("PlayerDamage",basicDamage);
+        PlayerPrefs.Save();
+    }
 
-    //시간초과로 플레이어가 죽었을떄 -> GM의 StartNewStage로 이동하는 로직
+    private void LoadPlayerStat()
+    {
+        basicDamage = PlayerPrefs.GetFloat("PlayerDamage", defaultDamage);
+    }
 }

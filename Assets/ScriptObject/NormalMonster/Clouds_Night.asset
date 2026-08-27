@@ -16,7 +16,8 @@ MonoBehaviour:
   monsterName: "\uD750\uB9BC"
   monsterPrefab: {fileID: 4524008664975938944, guid: 4026a2542c93059419270a9848669255, type: 3}
   maxHP: 100
-  coinReward: 0
+  coinReward: 10
   catchTime: 0
+  bgImage: {fileID: -8887869752171266299, guid: 90ac57159aad82145a04e56654c5027a, type: 3}
   spawnTime: 1
   monsterTier: 0

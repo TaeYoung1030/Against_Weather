@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1a89014ad61a79d4588eb67914ddc1a6, type: 3}
+  m_Name: BuffHouse
+  m_EditorClassIdentifier: Assembly-CSharp::ShopData
+  itemID: BuffHouse
+  itemName: "\uBC84\uD504 \uD558\uC6B0\uC2A4"
+  description: "\uD50C\uB808\uC774\uC5B4\uC758 \uACF5\uACA9\uB825\uC774 5% \uC0C1\uC2B9\uD55C\uB2E4"
+  icon: {fileID: 4333265961961565757, guid: b951744532740c940aa2661501992cd8, type: 3}
+  itemType: 2
+  baseCost: 5
+  costMultiplier: 1.5
+  effectValue: 0
+  structurePrefab: {fileID: 4651112793074620378, guid: bb77339727985604c981fe9fd8bd7f9e, type: 3}

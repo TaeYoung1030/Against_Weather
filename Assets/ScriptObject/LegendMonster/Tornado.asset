@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Tornado
   m_EditorClassIdentifier: Assembly-CSharp::WeatherMonsterData
   weatherType: Tornado
-  monsterName: 
-  monsterPrefab: {fileID: 0}
-  maxHP: 0
-  coinReward: 0
-  catchTime: 0
+  monsterName: "\uD1A0\uB124\uC774\uB3C4"
+  monsterPrefab: {fileID: 1673668595379803429, guid: 54ad0ca23ecc379489b18979a0c2f8ba, type: 3}
+  maxHP: 400
+  coinReward: 50
+  catchTime: 20
+  bgImage: {fileID: -1707494548055926406, guid: 9b10afedc40a4d4438427fe8d8011fdd, type: 3}
   spawnTime: 2
   monsterTier: 2

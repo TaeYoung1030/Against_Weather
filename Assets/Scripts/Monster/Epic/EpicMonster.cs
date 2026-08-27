@@ -1,9 +1,10 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EpicMonster : MonsterController
 {
-    public enum EpicType { Heat, Cold, Rain}
+    public enum EpicType { Heat, Cold, Rain, Thunder}
 
     [Header("에픽 보스 세팅")]
     [SerializeField] EpicType epicBossType;
@@ -17,17 +18,35 @@ public class EpicMonster : MonsterController
     [Header("호우 스킬 세팅")]
     [SerializeField] float missChance = 0.3f;
 
+    [Header("천둥 스킬 세팅")]
+    [SerializeField] float stunChance = 0.15f; //기절 확률
+    [SerializeField] float stunDuration = 2f; //기절시간
+
+    private bool isPlayerStunned = false;
+
+
+    public override void InitMonster(WeatherMonsterData data, float Hp)
+    {
+        base.InitMonster(data, Hp);
+
+        if (gameUI != null)
+        {
+            gameUI.SetTierIcon(WeatherMonsterData.MonsterTier.Epic);
+        }
+    }
     protected override void ActivateEpicSkill()
     {
         switch(epicBossType)
         {
-            //각 디버프 시작시 ui 에 알리기
             case EpicType.Heat:
+                gameUI.ActiveICon("Heat", true);
                 StartCoroutine(HeatWaveRegenRoutine());
                 break;
             case EpicType.Cold:
+                gameUI.ActiveICon("Cold", true);
                 break;
             case EpicType.Rain:
+            case EpicType.Thunder:
                 break;
         }
     }
@@ -43,35 +62,67 @@ public class EpicMonster : MonsterController
                 GameManager.instance.OnMonsterTakeDamage(currentHP, maxHP);
                 Debug.Log($"[폭염 효과] 체력 재생 완료. 현재 체력: {currentHP}");
             }
-            yield return new WaitForSeconds(1f); // 1초마다 회복
+            yield return new WaitForSeconds(1f);
         }
     }
 
 
     protected override float ApplyPlayerDebuffToDamage(float incomingDamage)
     {
-        // 스킬이 발동된 상태(체력 20% 이하)일 때만 디버프를 계산합니다.
         if (!isEpicSkillActivated) return incomingDamage;
+
+        if (isPlayerStunned)
+        {
+            return 0f;
+        }
 
         switch (epicBossType)
         {
             case EpicType.Cold:
-                // [한파] 데미지를 반토막 냅니다.
-                Debug.Log("한파 스킬로 공격력 감소");
+                //데미지 감소 구현
+                Debug.Log("공격력 감소");
                 return incomingDamage * (1f - damageReduce);
 
             case EpicType.Rain:
-                // [호우] 무작위 확률을 계산해 빗나감을 구현합니다.
+                //빗나감 구현, 빗나감 무시 구현
+                if (GameManager.instance.IsMissControlActive())
+                {
+                    Debug.Log("빗나감 방어");
+                    return incomingDamage;
+                }
                 if (Random.value < missChance)
                 {
-                    Debug.Log(" 호우로 인해 플레이어의 공격이 빗나갔습니다! (MISS)");
-                    // 필요 시 UI로 "MISS!" 텍스트를 띄우는 함수를 부를 수 있습니다.
-                    return 0f; // 데미지 0 처리
+                    Debug.Log("빗나감");
+                    gameUI.MissUI();
+                    return 0f;
+                }
+                break;
+            case EpicType.Thunder:
+                //기절 방어 및 기절 효과
+                if (GameManager.instance.IsStunControlActive())
+                {
+                    Debug.Log("기절 방어");
+                    return incomingDamage;
+                }
+                if (Random.value < stunChance)
+                {
+                    StartCoroutine(PlayerStunRoutine());
+                    gameUI.StunUI();
+                    return 0f;
                 }
                 break;
         }
 
         return incomingDamage;
+    }
+
+    private IEnumerator PlayerStunRoutine()
+    {
+        isPlayerStunned = true;
+        //gameUI.ToggleStunUI(true);
+        yield return new WaitForSeconds(stunDuration);
+        isPlayerStunned = false;
+        //gameUI.ToggleStunUI(false);
     }
 
 }

@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Epic_Thunderstorm
   m_EditorClassIdentifier: Assembly-CSharp::WeatherMonsterData
   weatherType: 
-  monsterName: 
-  monsterPrefab: {fileID: 0}
-  maxHP: 0
-  coinReward: 0
-  catchTime: 0
+  monsterName: "[\uBCF4\uC2A4]\uCC9C\uB465"
+  monsterPrefab: {fileID: 541620475012298745, guid: 200cdfc1d6b70974688561b829bca8ff, type: 3}
+  maxHP: 180
+  coinReward: 15
+  catchTime: 10
+  bgImage: {fileID: -8622468322052095617, guid: fe33cce5cc559c349b251f1c2cd9e90c, type: 3}
   spawnTime: 2
   monsterTier: 1

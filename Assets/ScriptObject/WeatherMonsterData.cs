@@ -11,6 +11,8 @@ public class WeatherMonsterData : ScriptableObject
     public float maxHP;
     public int coinReward;
     public float catchTime;
+    [Header("배경 이미지")]
+    public Sprite bgImage;
 
     public enum SpawnTimeType
     {

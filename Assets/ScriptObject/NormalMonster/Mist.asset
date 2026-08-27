@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeatherMonsterData
   weatherType: Mist
   monsterName: "\uC548\uAC1C"
-  monsterPrefab: {fileID: 0}
+  monsterPrefab: {fileID: 7161241313519148138, guid: 0435f784f2e253d46882589734f4b36d, type: 3}
   maxHP: 100
-  coinReward: 0
+  coinReward: 10
   catchTime: 0
+  bgImage: {fileID: -6901213253591069647, guid: 5fec356dd73ff4149a18771795971d44, type: 3}
   spawnTime: 2
   monsterTier: 0

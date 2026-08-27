@@ -16,7 +16,8 @@ MonoBehaviour:
   monsterName: "\uB208"
   monsterPrefab: {fileID: 0}
   maxHP: 100
-  coinReward: 0
+  coinReward: 10
   catchTime: 0
+  bgImage: {fileID: -1488080074415492123, guid: 70917c7932aa5884588928497b6fbe48, type: 3}
   spawnTime: 2
   monsterTier: 0

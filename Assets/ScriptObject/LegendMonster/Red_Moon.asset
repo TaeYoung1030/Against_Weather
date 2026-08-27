@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Red_Moon
   m_EditorClassIdentifier: Assembly-CSharp::WeatherMonsterData
   weatherType: Red_Moon
-  monsterName: 
+  monsterName: "\uAC1C\uAE30\uC6D4\uC2DD"
   monsterPrefab: {fileID: 2805585627764681986, guid: 6b50810954aea0942b5a200b14cf7080, type: 3}
   maxHP: 200
-  coinReward: 0
-  catchTime: 30
+  coinReward: 50
+  catchTime: 20
+  bgImage: {fileID: 8550231578414550022, guid: 0b6249ad473a4114599f388042afd018, type: 3}
   spawnTime: 2
   monsterTier: 2
